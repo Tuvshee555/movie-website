@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { PopularNext } from "./PopularNext"; // Make sure this is the correct import
 
-export const PopularMovies = () => {
+export const PopularMovies = ({ setShowNext, showNext }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1); 
-  const [nextMovies, setNextMovies] = useState([]);
+  const [page, setPage] = useState(1); // Keep track of the current page
+  // const [card, setCard] = useState(2)
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -24,12 +25,30 @@ export const PopularMovies = () => {
       }
 
       const data = await response.json();
+      console.log(data);
+      
       return data.results; 
+      
+
+      
     } catch (error) {
       setError(error.message);
       return [];
     }
   };
+  // useEffect(() => {
+  //   const handleCardInfo = () => {
+  //     const loadCard = async () => {
+  //       setLoading(true)
+  //       const card = await fetchMovies(page)
+  //       setCard(card) 
+  //       setLoading(false)
+
+  //     }
+      
+  //   }
+  //   loadMovies()
+  // }, [card])
 
   useEffect(() => {
     const loadMovies = async () => {
@@ -42,11 +61,8 @@ export const PopularMovies = () => {
     loadMovies();
   }, [page]);
 
-  const handleSeeMoreClick = async () => {
-    const nextPage = page + 1;
-    const data = await fetchMovies(nextPage);
-    setMovies((prevMovies) => [...prevMovies, ...data]); 
-    setPage(nextPage);
+  const handleSeeMoreClick = () => {
+    setShowNext(true); // Show the next page of movies when clicked
   };
 
   if (loading) {
@@ -55,6 +71,11 @@ export const PopularMovies = () => {
 
   if (error) {
     return <div className="text-center text-red-500">Error: {error}</div>;
+  }
+
+  // If showNext is true, render PopularNext with the current page and back button
+  if (showNext) {
+    return <PopularNext onBack={() => setShowNext(false)} currentPage={page} />;
   }
 
   return (
@@ -79,7 +100,7 @@ export const PopularMovies = () => {
             <img
               src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
               alt={movie.title}
-              className="w-full h-64 object-cover"
+              className="w-full h-[340px] object-cover"
             />
             <div className="p-4">
               <h3 className="text-lg font-bold text-gray-800 dark:text-white">

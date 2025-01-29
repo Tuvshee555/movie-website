@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export const TopRatedMovies = () => {
+export default function TopRatedPage() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,11 +45,11 @@ export const TopRatedMovies = () => {
   return (
     <div>
       <h2 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-        Top Rated Movies
+        All Top Rated Movies
       </h2>
       <div className="grid lg:grid-cols-5 gap-6">
-        {/* Display only the first 10 movies */}
-        {movies.slice(0, 10).map((movie) => (
+        {/* Display all the top-rated movies */}
+        {movies.map((movie) => (
           <div
             key={movie.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
@@ -71,16 +70,6 @@ export const TopRatedMovies = () => {
           </div>
         ))}
       </div>
-
-      {/* Link to the "See More" page */}
-      <div className="text-center mt-4">
-        <Link
-          href="/top-rated"
-          className="bg-blue-500 text-white py-2 px-4 rounded"
-        >
-          See More
-        </Link>
-      </div>
     </div>
   );
-};
+}

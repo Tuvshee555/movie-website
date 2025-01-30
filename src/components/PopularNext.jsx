@@ -33,6 +33,8 @@ export const PopularNext = ({ onBack, currentPage }) => {
 
     fetchMovies();
   }, [API_KEY, TMDB_BASE_URL, currentPage]);
+  console.log("nextPOP");
+  
 
   if (loading) {
     return <div>Loading Popular Movies...</div>;
@@ -68,6 +70,7 @@ export const PopularNext = ({ onBack, currentPage }) => {
               alt={movie.title}
               className="w-full h-[340px] object-cover"
             />
+           
             <div className="p-4">
               <h3 className="text-lg font-bold text-gray-800 dark:text-white">
                 {movie.title}

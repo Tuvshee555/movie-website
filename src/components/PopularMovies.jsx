@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PopularNext } from "./PopularNext"; // Make sure this is the correct import
+import { PopularNext } from "./PopularNext";
+import { First } from "./First";
+import { ArrowR } from "./ArrowR";
 
 export const PopularMovies = ({ setShowNext, showNext }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1); // Keep track of the current page
-  // const [card, setCard] = useState(2)
+  const [page, setPage] = useState(3);
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -26,30 +27,14 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
 
       const data = await response.json();
       console.log(data);
-      
-      return data.results; 
-      
 
-      
+      return data.results;
     } catch (error) {
       setError(error.message);
       return [];
     }
   };
-  // useEffect(() => {
-  //   const handleCardInfo = () => {
-  //     const loadCard = async () => {
-  //       setLoading(true)
-  //       const card = await fetchMovies(page)
-  //       setCard(card) 
-  //       setLoading(false)
-
-  //     }
-      
-  //   }
-  //   loadMovies()
-  // }, [card])
-
+  console.log("page1");
   useEffect(() => {
     const loadMovies = async () => {
       setLoading(true);
@@ -85,7 +70,10 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
           Popular Movies
         </h2>
         <div>
-          <button className="text-white" onClick={handleSeeMoreClick}>
+          <button
+            className="text-white bg-gray-800 p-2 rounded-lg"
+            onClick={handleSeeMoreClick}
+          >
             See more
           </button>
         </div>
@@ -102,13 +90,17 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
               alt={movie.title}
               className="w-full h-[340px] object-cover"
             />
+
             <div className="p-4">
               <h3 className="text-lg font-bold text-gray-800 dark:text-white">
                 {movie.title}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Rating: {movie.vote_average}/10
-              </p>
+              <div className="flex gap-[5px]">
+                <img src="./Stat.png" className="h-[23px] w-[23px]" />
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Rating: {movie.vote_average}/10
+                </p>
+              </div>
             </div>
           </div>
         ))}

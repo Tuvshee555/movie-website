@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export const UpcomingMovies = () => {
+export default function TopRatedNext() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,14 +12,14 @@ export const UpcomingMovies = () => {
   const TMDB_IMAGE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_SERVICE_URL;
 
   useEffect(() => {
-    const fetchUpcomingMovies = async () => {
+    const fetchTopRatedMovies = async () => {
       try {
         const response = await fetch(
-          `${TMDB_BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`
+          `${TMDB_BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=1`
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch upcoming movies");
+          throw new Error("Failed to fetch top-rated movies");
         }
 
         const data = await response.json();
@@ -32,11 +31,13 @@ export const UpcomingMovies = () => {
       }
     };
 
-    fetchUpcomingMovies();
+    fetchTopRatedMovies();
   }, [API_KEY, TMDB_BASE_URL]);
+  console.log("TopRatedNex");
+  
 
   if (loading) {
-    return <div>Loading upcoming movies...</div>;
+    return <div>Loading top-rated movies...</div>;
   }
 
   if (error) {
@@ -46,11 +47,11 @@ export const UpcomingMovies = () => {
   return (
     <div>
       <h2 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-        Upcoming Movies
+        All Top Rated Movies
       </h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {/* Display only the first 10 movies */}
-        {movies.slice(0, 10).map((movie) => (
+      <div className="grid lg:grid-cols-5 gap-6">
+        {/* Display all the top-rated movies */}
+        {movies.map((movie) => (
           <div
             key={movie.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
@@ -71,16 +72,6 @@ export const UpcomingMovies = () => {
           </div>
         ))}
       </div>
-
-      {/* Link to the "See More" page */}
-      <div className="text-center mt-4">
-        <Link
-          href="/upcoming"
-          className="bg-blue-500 text-white py-2 px-4 rounded"
-        >
-          See More
-        </Link>
-      </div>
     </div>
   );
-};
+}

@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { PopularNext } from "./PopularNext";
-import { First } from "./First";
-import { ArrowR } from "./ArrowR";
+import { useRouter } from "next/navigation";
 
 export const PopularMovies = ({ setShowNext, showNext }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(3);
+  const [page, setPage] = useState(1);
+  const router = useRouter()
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -46,8 +46,9 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
     loadMovies();
   }, [page]);
 
-  const handleSeeMoreClick = () => {
-    setShowNext(true); // Show the next page of movies when clicked
+  const handleSeeMoreClick = (movieType) => {
+    router.push(`/${movieType}`)
+    setShowNext(true)
   };
 
   if (loading) {
@@ -58,7 +59,6 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
     return <div className="text-center text-red-500">Error: {error}</div>;
   }
 
-  // If showNext is true, render PopularNext with the current page and back button
   if (showNext) {
     return <PopularNext onBack={() => setShowNext(false)} currentPage={page} />;
   }
@@ -72,7 +72,7 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
         <div>
           <button
             className="text-white bg-gray-800 p-2 rounded-lg"
-            onClick={handleSeeMoreClick}
+            onClick={()=>handleSeeMoreClick("popular")}
           >
             See more
           </button>

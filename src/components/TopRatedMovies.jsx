@@ -49,7 +49,6 @@ export const TopRatedMovies = () => {
         Top Rated Movies
       </h2>
       <div className="grid lg:grid-cols-5 gap-6">
-        {/* Display only the first 10 movies */}
         {movies.slice(0, 10).map((movie) => (
           <div
             key={movie.id}
@@ -72,7 +71,6 @@ export const TopRatedMovies = () => {
         ))}
       </div>
 
-      {/* Link to the "See More" page */}
       <div className="text-center mt-4">
         <Link
           href="/top-rated"

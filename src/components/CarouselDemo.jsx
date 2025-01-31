@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 
 export function CarouselDemo() {
-  const [Photo, setMoviePhoto] = useState([]);
+  const [Movie, setMoviePhoto] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,17 +55,19 @@ export function CarouselDemo() {
   }
 
   return (
-    <div className="bg-[red] h-[600px] w-sreen">
-      <Carousel className="w-full max-w-xs">
-        <CarouselContent>
-          {Photo.map((movie) => (
-            <div key={movie.id} className="bg-[white] dark:bg-gray-800">
+    <div className="bg-[red] h-[600px] w-[100%] flex justify-center ">
+      <Carousel className="w-screen">
+        <CarouselContent className="flex">
+          {Movie.map((movie) => (
+            <CarouselItem key={movie.id} className="bg-[white] dark:bg-gray-800 ">
+              <div className="bg-white">
               <img
-                src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
+                src={`${TMDB_IMAGE_URL}/original${movie.backdrop_path}`}
                 alt={movie.title}
-                className="w-[600px] h-[100%]"
+                className="h-[600px] w-[100%] object-cover"
               />
-            </div>
+              </div>
+            </CarouselItem>
           ))}
         </CarouselContent>
         <CarouselPrevious />
@@ -74,3 +76,24 @@ export function CarouselDemo() {
     </div>
   );
 }
+
+
+    // <div className="bg-red-500 h-[600px] w-full">
+    //   <Carousel className="w-full max-w-4xl mx-auto">
+    //     <CarouselContent className="flex space-x-4">
+    //       {Movie.map((movie, index) => ( // <-- FIXED: changed "movies" to "Movie"
+    //         <CarouselItem key={index} className="w-[300px]">
+    //           <div className="bg-white dark:bg-gray-800">
+    //             <img
+    //               src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
+    //               alt={movie.title}
+    //               className="h-[600px] object-cover"
+    //             />
+    //           </div>
+    //         </CarouselItem>
+    //       ))}
+    //     </CarouselContent>
+    //     <CarouselPrevious />
+    //     <CarouselNext />
+    //   </Carousel>
+    // </div>

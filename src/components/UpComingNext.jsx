@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function TopRatedPage() {
+export const UpcomingNext = ({ onBack }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,14 +13,14 @@ export default function TopRatedPage() {
   const TMDB_IMAGE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_SERVICE_URL;
 
   useEffect(() => {
-    const fetchTopRatedMovies = async () => {
+    const fetchUpcomingMovies = async () => {
       try {
         const response = await fetch(
-          `${TMDB_BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=1`
+          `${TMDB_BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch top-rated movies");
+          throw new Error("Failed to fetch upcoming movies");
         }
 
         const data = await response.json();
@@ -31,11 +32,11 @@ export default function TopRatedPage() {
       }
     };
 
-    fetchTopRatedMovies();
+    fetchUpcomingMovies();
   }, [API_KEY, TMDB_BASE_URL]);
 
   if (loading) {
-    return <div>Loading top-rated movies...</div>;
+    return <div>Loading upcoming movies...</div>;
   }
 
   if (error) {
@@ -44,11 +45,17 @@ export default function TopRatedPage() {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-        All Top Rated Movies
-      </h2>
+      <div className="mt-[52px] flex justify-between bg-black">
+        <h2 className="text-[30px] font-[600] text-white bg-[black]">Upcoming Movies - Page</h2>
+        <button
+          className="text-white bg-gray p-2 rounded-[8px]"
+          onClick={onBack}
+        >
+          ← Back
+        </button>
+      </div>
+
       <div className="grid lg:grid-cols-5 gap-6">
-        {/* Display all the top-rated movies */}
         {movies.map((movie) => (
           <div
             key={movie.id}
@@ -72,4 +79,4 @@ export default function TopRatedPage() {
       </div>
     </div>
   );
-}
+};

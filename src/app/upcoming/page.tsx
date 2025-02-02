@@ -12,7 +12,6 @@ export default function Home() {
         <div>
             <First />
             <UpcomingNext  onBack={onBack}/>
-            <div></div>
         </div>
     )
 }

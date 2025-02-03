@@ -1,11 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { First } from "./First";
+import { useRouter } from "next/router";
+import Router from "next/navigation";
 
-export const PopularNext = ({ onBack, currentPage }) => {
+export const PopularNext = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter()
+  interface Movie {
+    id: number;
+    vote_average: number;
+    poster_path:string;
+    title: string;
+
+  }
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -15,9 +26,7 @@ export const PopularNext = ({ onBack, currentPage }) => {
     const fetchMovies = async () => {
       try {
         const response = await fetch(
-          `${TMDB_BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=${
-            currentPage + 1
-          }`
+          `${TMDB_BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=1`
         );
 
         if (!response.ok) {
@@ -26,15 +35,13 @@ export const PopularNext = ({ onBack, currentPage }) => {
 
         const data = await response.json();
         setMovies(data.results);
-      } catch (error) {
-        setError(error.message);
-      } finally {
+      }  finally {
         setLoading(false);
       }
     };
 
     fetchMovies();
-  }, [API_KEY, TMDB_BASE_URL, currentPage]);
+  }, [API_KEY, TMDB_BASE_URL]);
   console.log("nextPOP");
 
   if (loading) {
@@ -46,22 +53,24 @@ export const PopularNext = ({ onBack, currentPage }) => {
   }
 
   return (
+    <>
+    <First />
     <div className="flex justify-center bg-black">
       <div className="w-[1280px] align-center">
         <div className="flex justify-between mb-6 mt-[52px]">
           <h2 className="text-3xl font-bold text-white dark:text-white">
-            Popular Movies - Page {currentPage + 1}
+            Popular Movies - Page
           </h2>
           <button
             className="text-white bg-gray-800 p-2 rounded-lg"
-            onClick={onBack}
+            onClick={()=> router.back()}
           >
             ← Back
           </button>
         </div>
 
         <div className="grid lg:grid-cols-5 gap-6">
-          {movies.map((movie) => (
+          {movies.map((movie:Movie) => (
             <div
               key={movie.id}
               className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
@@ -84,6 +93,6 @@ export const PopularNext = ({ onBack, currentPage }) => {
           ))}
         </div>
       </div>
-    </div>
+    </div></>
   );
 };

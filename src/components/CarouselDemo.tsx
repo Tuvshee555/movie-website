@@ -11,6 +11,13 @@ export function CarouselDemo() {
   const [Movie, setMoviePhoto] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  interface Movie {
+    id: number;
+    title: string;
+    poster_path: string;
+    vote_average: number;
+    backdrop_path: string;
+  }
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -29,12 +36,10 @@ export function CarouselDemo() {
       const data = await response.json();
       console.log(data);
       return data.results;
-    } catch (error) {
-      setError(error.message);
-      return [];
+    } finally {
+      setLoading(false)
     }
   };
-  // console.log("CAROUSELDEMO");
 
   useEffect(() => {
     const LoadMovies = async () => {
@@ -58,7 +63,7 @@ export function CarouselDemo() {
     <div className="bg-[red] h-[600px] w-[100%] flex justify-center ">
       <Carousel className="w-screen">
         <CarouselContent className="flex">
-          {Movie.map((movie) => (
+          {Movie.map((movie: Movie) => (
             <CarouselItem key={movie.id} className="bg-[white] dark:bg-gray-800 ">
               <div className="bg-white">
               <img
@@ -76,24 +81,3 @@ export function CarouselDemo() {
     </div>
   );
 }
-
-
-    // <div className="bg-red-500 h-[600px] w-full">
-    //   <Carousel className="w-full max-w-4xl mx-auto">
-    //     <CarouselContent className="flex space-x-4">
-    //       {Movie.map((movie, index) => ( // <-- FIXED: changed "movies" to "Movie"
-    //         <CarouselItem key={index} className="w-[300px]">
-    //           <div className="bg-white dark:bg-gray-800">
-    //             <img
-    //               src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
-    //               alt={movie.title}
-    //               className="h-[600px] object-cover"
-    //             />
-    //           </div>
-    //         </CarouselItem>
-    //       ))}
-    //     </CarouselContent>
-    //     <CarouselPrevious />
-    //     <CarouselNext />
-    //   </Carousel>
-    // </div>

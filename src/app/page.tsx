@@ -18,7 +18,7 @@ export default function Home() {
         <PopularMovies setShowNext={setShowNext} showNext={showNext} />
 
 <UpcomingMovies setShowNext={setShowNext} showNext={showNext}/>
-<TopRatedMovies />
+<TopRatedMovies setShowNext={setShowNext} showNext={showNext} />
       </div>
     </div>
   );

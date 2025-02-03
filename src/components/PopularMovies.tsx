@@ -4,21 +4,27 @@ import { useState, useEffect } from "react";
 import { PopularNext } from "./PopularNext";
 import { useRouter } from "next/navigation";
 
-export const PopularMovies = ({ setShowNext, showNext }) => {
+export const PopularMovies = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const router = useRouter()
+  interface Movie {
+    id: number;
+    vote_average: number
+    poster_path: string
+    title: string
+  }
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_IMAGE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_SERVICE_URL;
 
-  const fetchMovies = async (pageNumber) => {
+  const fetchMovies = async () => {
     try {
       const response = await fetch(
-        `${TMDB_BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=${pageNumber}`
+        `${TMDB_BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=1`
       );
 
       if (!response.ok) {
@@ -29,27 +35,22 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
       console.log(data);
 
       return data.results;
-    } catch (error) {
-      setError(error.message);
-      return [];
+    } finally {
+      setLoading(false)
     }
   };
   console.log("page1");
   useEffect(() => {
     const loadMovies = async () => {
       setLoading(true);
-      const data = await fetchMovies(page);
+      const data = await fetchMovies();
       setMovies(data);
       setLoading(false);
     };
 
     loadMovies();
-  }, [page]);
+  }, []);
 
-  const handleSeeMoreClick = (movieType) => {
-    router.push(`/${movieType}`)
-    setShowNext(true)
-  };
 
   if (loading) {
     return <div className="text-center">Loading Popular Movies...</div>;
@@ -59,9 +60,6 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
     return <div className="text-center text-red-500">Error: {error}</div>;
   }
 
-  if (showNext) {
-    return <PopularNext onBack={() => setShowNext(false)} currentPage={page} />;
-  }
 
   return (
     <div>
@@ -72,7 +70,7 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
         <div>
           <button
             className="text-white bg-gray-800 p-2 rounded-lg"
-            onClick={()=>handleSeeMoreClick("popular")}
+            onClick={()=>router.push("/popular")}
           >
             See more
           </button>
@@ -80,7 +78,7 @@ export const PopularMovies = ({ setShowNext, showNext }) => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {movies.slice(0, 10).map((movie) => (
+        {movies.slice(0, 10).map((movie:Movie) => (
           <div
             key={movie.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"

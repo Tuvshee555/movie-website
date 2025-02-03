@@ -1,15 +1,15 @@
-"use client"
-import { UpcomingNext } from "@/components/UpComingNext"
+"use client" 
+
+import { TopRatedNext } from "@/components/TopRatedNext"
 import { useState } from "react"
 
 export default function Home() {
-
     const [currentPage, setCurrentPage] = useState(0)
     const onBack = () => {}
 
-    return (
+    return ( 
         <div>
-            <UpcomingNext  onBack={onBack}/>
+            <TopRatedNext onBack={onBack} currentPage={currentPage} />
         </div>
     )
 }

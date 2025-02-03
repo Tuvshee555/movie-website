@@ -1,15 +1,7 @@
-"use client" 
+"use client";
 
-import { TopRatedNext } from "@/components/TopRatedNext"
-import { useState } from "react"
+import { TopRatedNext } from "@/components/TopRatedNext";
 
 export default function Home() {
-    const [currentPage, setCurrentPage] = useState(0)
-    const onBack = () => {}
-
-    return ( 
-        <div>
-            <TopRatedNext onBack={onBack} currentPage={currentPage} />
-        </div>
-    )
+  return <TopRatedNext />;
 }

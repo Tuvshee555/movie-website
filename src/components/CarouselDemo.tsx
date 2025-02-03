@@ -37,7 +37,7 @@ export function CarouselDemo() {
       console.log(data);
       return data.results;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -64,13 +64,16 @@ export function CarouselDemo() {
       <Carousel className="w-screen">
         <CarouselContent className="flex">
           {Movie.map((movie: Movie) => (
-            <CarouselItem key={movie.id} className="bg-[white] dark:bg-gray-800 ">
+            <CarouselItem
+              key={movie.id}
+              className="bg-[white] dark:bg-gray-800 "
+            >
               <div className="bg-white">
-              <img
-                src={`${TMDB_IMAGE_URL}/original${movie.backdrop_path}`}
-                alt={movie.title}
-                className="h-[600px] w-[100%] object-cover"
-              />
+                <img
+                  src={`${TMDB_IMAGE_URL}/original${movie.backdrop_path}`}
+                  alt={movie.title}
+                  className="h-[600px] w-[100%] object-cover"
+                />
               </div>
             </CarouselItem>
           ))}

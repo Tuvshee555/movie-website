@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { TopRatedNext } from "./TopRatedNext";
 import { useRouter } from "next/navigation";
-import { MovieCard } from "@/components/MovieCard";
 
 export const TopRatedMovies = () => {
   const [movies, setMovies] = useState([]);
@@ -38,7 +36,6 @@ export const TopRatedMovies = () => {
   if (error)
     return <div className="text-center text-red-500">Error: {error}</div>;
 
-
   return (
     <div>
       <div className="flex justify-between">
@@ -54,18 +51,14 @@ export const TopRatedMovies = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {movies.slice(0, 10).map((movie:Movie) => (
+        {movies.slice(0, 10).map((movie: Movie) => (
           <div
             key={movie.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
             onClick={() => router.push(`/moviecard/${movie.id}`)}
           >
             <img
-              src={
-                movie.poster_path
-                  ? `${TMDB_IMAGE_URL}/w500${movie.poster_path}`
-                  : "/fallback.jpg"
-              }
+              src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
               alt={movie.title}
               className="w-full h-[340px] object-cover"
             />

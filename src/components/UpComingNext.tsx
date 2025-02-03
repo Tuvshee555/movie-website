@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { First } from "./First";
+import { useRouter } from "next/navigation";
 
 export const UpcomingNext = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter();
   interface Movie {
     id: number;
     title: string;
@@ -58,16 +60,18 @@ export const UpcomingNext = () => {
             </h2>
             <button
               className="text-white bg-gray p-2 rounded-[8px]"
+              onClick={() => router.back()}
             >
               ← Back
             </button>
           </div>
 
           <div className="grid lg:grid-cols-5 gap-6">
-            {movies.map((movie:Movie) => (
+            {movies.map((movie: Movie) => (
               <div
                 key={movie.id}
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                onClick={() => router.push(`/moviecard/${movie.id}`)}
               >
                 <img
                   src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}

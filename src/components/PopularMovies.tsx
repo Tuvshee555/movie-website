@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PopularNext } from "./PopularNext";
 import { useRouter } from "next/navigation";
 
 export const PopularMovies = () => {
@@ -9,12 +8,12 @@ export const PopularMovies = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const router = useRouter()
+  const router = useRouter();
   interface Movie {
     id: number;
-    vote_average: number
-    poster_path: string
-    title: string
+    vote_average: number;
+    poster_path: string;
+    title: string;
   }
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
@@ -36,7 +35,7 @@ export const PopularMovies = () => {
 
       return data.results;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
   console.log("page1");
@@ -51,7 +50,6 @@ export const PopularMovies = () => {
     loadMovies();
   }, []);
 
-
   if (loading) {
     return <div className="text-center">Loading Popular Movies...</div>;
   }
@@ -59,7 +57,6 @@ export const PopularMovies = () => {
   if (error) {
     return <div className="text-center text-red-500">Error: {error}</div>;
   }
-
 
   return (
     <div>
@@ -70,7 +67,7 @@ export const PopularMovies = () => {
         <div>
           <button
             className="text-white bg-gray-800 p-2 rounded-lg"
-            onClick={()=>router.push("/popular")}
+            onClick={() => router.push("/popular")}
           >
             See more
           </button>
@@ -78,10 +75,11 @@ export const PopularMovies = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {movies.slice(0, 10).map((movie:Movie) => (
+        {movies.slice(0, 10).map((movie: Movie) => (
           <div
             key={movie.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+            onClick={() => router.push(`/moviecard/${movie.id}`)}
           >
             <img
               src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}

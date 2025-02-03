@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { First } from "./First";
+import { useRouter } from "next/navigation";
 
 export const TopRatedNext = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter();
   type Movie = {
     id: number;
     title: string;
     poster_path: string;
     vote_average: number;
   };
-  
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -51,27 +52,25 @@ export const TopRatedNext = () => {
         <div className="w-[1280px] align-center">
           <div className="flex justify-between mb-6 mt-[52px]">
             <h2 className="text-3xl font-bold text-white">
-              Top Rated Movies - Page 
+              Top Rated Movies - Page
             </h2>
             <button
               className="text-white bg-gray-800 p-2 rounded-lg"
+              onClick={() => router.back()}
             >
               ← Back
             </button>
           </div>
 
           <div className="grid lg:grid-cols-5 gap-6">
-            {movies.map((movie:Movie) => (
+            {movies.map((movie: Movie) => (
               <div
                 key={movie.id}
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                onClick={() => router.push(`/moviecard/${movie.id}`)}
               >
                 <img
-                  src={
-                    movie.poster_path
-                      ? `${TMDB_IMAGE_URL}/w500${movie.poster_path}`
-                      : "/fallback.jpg"
-                  }
+                  src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
                   alt={movie.title}
                   className="w-full h-[340px] object-cover"
                 />

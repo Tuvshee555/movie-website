@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { UpcomingNext } from "./UpComingNext";
 
 export const UpcomingMovies = () => {
   const [movies, setMovies] = useState([]);
@@ -16,7 +15,6 @@ export const UpcomingMovies = () => {
     poster_path: string;
     vote_average: number;
   };
-  
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -35,7 +33,7 @@ export const UpcomingMovies = () => {
       const data = await response.json();
       return data.results;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -59,7 +57,6 @@ export const UpcomingMovies = () => {
     return <div className="text-center text-red-500">Error: {error}</div>;
   }
 
-
   return (
     <div>
       <div className="flex justify-between">
@@ -76,10 +73,11 @@ export const UpcomingMovies = () => {
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {movies.slice(0, 10).map((movie:Movie) => (
+        {movies.slice(0, 10).map((movie: Movie) => (
           <div
             key={movie.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+            onClick={() => router.push(`/moviecard/${movie.id}`)}
           >
             <img
               src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}

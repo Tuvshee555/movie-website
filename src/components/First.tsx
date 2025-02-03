@@ -1,7 +1,6 @@
-import {Moon} from "./Moon"
+import { Moon } from "./Moon";
 export const First = () => {
   return (
-
     <div className="bg-[black] text-white shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
         <div className="flex items-center space-x-3">
@@ -9,9 +8,7 @@ export const First = () => {
           <h1 className="text-2xl font-bold">Movie Z</h1>
         </div>
         <div className="flex items-center space-x-4">
-          <select
-            className="px-3 py-2 rounded-md border-gray-300 dark:border-gray-700 bg-white text-gray-800"
-          >
+          <select className="px-3 py-2 rounded-md border-gray-300 dark:border-gray-700 bg-white text-gray-800">
             <option>Genre</option>
             <option>Action</option>
             <option>Comedy</option>
@@ -23,8 +20,8 @@ export const First = () => {
             className="px-4 py-2 rounded-md border-gray-300 dark:border-gray-700 bg-white text-gray-800"
           />
         </div>
-        <button>
-          <img src="/moon.png" alt="Theme Toggle" className="w-6 h-6" />
+        <button className="bg-[white] rounded-[8px] p-[8px]">
+          <Moon />
         </button>
       </div>
     </div>

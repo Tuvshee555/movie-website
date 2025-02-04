@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { First } from "./First";
 import { useParams, useRouter } from "next/navigation";
+import { Trailer } from "./Trailer";
 
 interface Movie {
   id: number;
@@ -67,23 +68,27 @@ export const MovieCard = () => {
     <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
       <First />
 
-      <div className="p-4 max-w-2xl mx-auto text-white">
+      <div className="p-4 mx-auto text-white">
         <h1 className="text-2xl text-black font-[600]">{movie.title}</h1>
         <p className="mt-2 text-[red] font-[500]">{movie.overview}</p>
-        <div className="flex gap-[32px]">
+        <div className="flex gap-[32px] justify-center">
           {movie.poster_path && (
             <img
               src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
               className="rounded-[8px] h-[430] w-[288]"
             />
           )}
-          {movie.backdrop_path && (
-            <img
-              src={`${TMDB_IMAGE_URL}/original${movie.backdrop_path}`}
-              className="w-[760px] h-[430px] rounded-[8px] object-cover"
-            />
-          )}
+          <div>
+            {movie.backdrop_path && (
+              <img
+                src={`${TMDB_IMAGE_URL}/original${movie.backdrop_path}`}
+                className="w-[760px] h-[430px] rounded-[8px] object-cover"
+              />
+            )}
+            <Trailer/>
+          </div>
         </div>
+
         <button
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
           onClick={() => router.back()}

@@ -5,6 +5,10 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 
+
+
+// useparamsss !!!
+
 interface Gener {
   id: number;
   key: string;
@@ -40,6 +44,13 @@ export default function Home() {
   useEffect(() => {
     fetchGenres();
   }, []);
+
+//   const fetchMovies = async () => {
+//     const response = await axios.get(`${TMDB_BASE_URL}/search/movie?query=${searchValue}&language=en-US&page=${page}`)
+//   }
+
+
+
 
   if(error) return <div className="flex justify-center">Error: {error}</div>
   if(loading) return <div className="flex justify-center">Loading</div>

@@ -2,7 +2,7 @@
 import { First } from "@/components/First";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Gener {
@@ -10,20 +10,24 @@ interface Gener {
   name: string;
 }
 interface Movie {
-  id: number;
+  id: string;
   title: string;
   vote_average: number;
   poster_path: string;
 }
 
-export default function Home() {
+export default function Home({}) {
   const [genres, setGenres] = useState<Gener[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState<number[]>([]);
+  // const [selectedGenre, setSelectedGenre] = useState<number[]>([]);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingMovies, setLoadingMovies] = useState(true);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const rawGenreIds = searchParams.get("genreIds");
+  const genreIds = rawGenreIds ? rawGenreIds.split(",") : [];
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -58,8 +62,7 @@ export default function Home() {
           params: {
             language: "en-US",
             api_key: API_KEY,
-            with_genres:
-              selectedGenre.length > 0 ? selectedGenre.join(",") : undefined,
+            with_genres: genreIds.length > 0 ? genreIds.join(",") : undefined,
           },
         });
         setMovies(response.data.results);
@@ -74,12 +77,17 @@ export default function Home() {
     };
 
     fetchMovies();
-  }, [selectedGenre]);
+  }, [searchParams]);
 
-  const handleSelected = (id: number) =>
-    setSelectedGenre((old) =>
-      old.includes(id) ? old.filter((old) => old !== id) : [...old, id]
-    );
+  const handleSelected = (id: string) => {
+    const params = new URLSearchParams(searchParams);
+    const updatedGenres = genreIds.includes(id)
+      ? genreIds.filter((g) => g !== id)
+      : [...genreIds, id];
+
+    params.set("genreIds", updatedGenres.join(","));
+    router.push(`/genres?${params.toString()}`);
+  };
 
   if (error) return <div className="flex justify-center">Error: {error}</div>;
 
@@ -105,15 +113,15 @@ export default function Home() {
                     className="h-8 w-24 bg-gray-300 rounded-[8px]"
                   />
                 ))
-              : genres.map((genres) => (
+              : genres.map((genres: Gener) => (
                   <button
                     key={genres.id}
                     className={`p-2 cursor-pointer rounded-[8px] ${
-                      selectedGenre.includes(genres.id)
+                      genreIds.includes(String(genres.id))
                         ? "bg-[white] text-black border border-gray-800"
                         : "bg-black text-white"
                     }`}
-                    onClick={() => handleSelected(genres.id)}
+                    onClick={() => handleSelected(String(genres.id))}
                   >
                     {genres.name}
                   </button>

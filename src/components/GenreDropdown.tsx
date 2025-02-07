@@ -11,19 +11,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 interface Gener {
   id: number;
-  key: string;
   name: string;
 }
 
 export const GenreDropdown = () => {
   const [genres, setGenres] = useState<Gener[] | null>(null);
+  const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter()
+  const router = useRouter();
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -54,25 +54,41 @@ export const GenreDropdown = () => {
 
   return (
     <>
-    <div className="z-40">
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button >Genre</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="flex w-[500px] flex flex-col" >
-        <DropdownMenuLabel className="text-[18px] font-[600]">Genres</DropdownMenuLabel>
-        <DropdownMenuLabel>See lists of movies by genre</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup >
-          <DropdownMenuItem className="flex flex-wrap">
-            {genres?.map((genres) => (
-            <Button key={genres.id} onClick={() => router.push(`/genres/${genres.id}`)}>{genres.name}</Button>
-          ))}
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    </div>
+      <div className="z-40">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button>Genre</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="flex w-[500px] flex flex-col">
+            <DropdownMenuLabel className="text-[18px] font-[600]">
+              Genres
+            </DropdownMenuLabel>
+            <DropdownMenuLabel>See lists of movies by genre</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem className="flex flex-wrap">
+                {genres?.map((genre) => (
+                  <Button
+                    key={genre.id}
+                    onClick={() => {
+                      setSelectedGenre(genre.id);
+                      router.push(`/genres?genreIds=${genre.id}`);
+                    }}
+                    className={`text-[18px] font-[600] ${
+                      selectedGenre === genre.id
+                        ? "bg-[white] text-black"
+                        : "bg-black text-white"
+                    }`}
+                    style={{ background: "black", fontSize: "12px" }}
+                  >
+                    {genre.name}
+                  </Button>
+                ))}
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </>
   );
 };

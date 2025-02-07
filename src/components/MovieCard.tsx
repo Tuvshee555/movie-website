@@ -12,13 +12,17 @@ interface Movie {
   vote_average: number;
   overview: string;
   backdrop_path: string;
+  genres: { id: number; name: string }[]; // FIXED
+  name: string;
 }
+
 
 export const MovieCard = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { movieId } = useParams();
+  const [genre, setGenre] = useState<{ id: number; name: string }[]>([]);
   const router = useRouter();
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
@@ -53,6 +57,7 @@ export const MovieCard = () => {
       const data = await fetchMovie();
       setMovie(data);
       setLoading(false);
+      data && setGenre(data.genres)
     };
     if (movieId) loadMovie();
   }, [movieId]);
@@ -78,6 +83,11 @@ export const MovieCard = () => {
               className="rounded-[8px] h-[430] w-[288]"
             />
           )}
+          {genre?.map((g) => (
+            <div key={g.id} className="text-[50px] text-[green]">{g.name}</div>
+            
+          ))}
+          
           <div>
             {movie.backdrop_path && (
               <img
@@ -91,7 +101,7 @@ export const MovieCard = () => {
 
         <button
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-          onClick={() => router.back()}
+          onClick={() => router.push(`/home`)}
         >
           ← Back
         </button>

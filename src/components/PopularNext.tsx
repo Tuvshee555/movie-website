@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { First } from "./First";
+import { First } from "./Header";
 import { useRouter } from "next/navigation";
 
 export const PopularNext = () => {

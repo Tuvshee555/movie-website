@@ -1,5 +1,5 @@
 "use client";
-import { First } from "@/components/First";
+import { First } from "@/components/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -18,7 +18,6 @@ interface Movie {
 
 export default function Home({}) {
   const [genres, setGenres] = useState<Gener[]>([]);
-  // const [selectedGenre, setSelectedGenre] = useState<number[]>([]);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -96,12 +95,6 @@ export default function Home({}) {
   return (
     <>
       <First />
-      <button
-        className="text-white bg-gray-800 p-2 rounded-lg flex justify-center"
-        onClick={() => router.back()}
-      >
-        back
-      </button>
       <div className="flex gap-6 p-4 justify-evenly">
         <div className="w-1/4">
           <h2 className="text-lg font-semibold mb-2">Genres</h2>

@@ -14,7 +14,7 @@ export const First = () => {
           <img  src="/film.png" alt="Logo" className="w-8 h-8" />
           <h1 className="text-2xl font-bold">Movie Z</h1>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="lg:flex hidden items-center space-x-4 ">
           <GenreDropdown />
           <SearchBar/> 
         </div>

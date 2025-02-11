@@ -1,111 +1,157 @@
 "use client";
 
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import debounce from "lodash.debounce"; // ✅ Prevents excessive API calls
+import axios from "axios";
+import { First } from "./Header";
+import { useParams, useRouter } from "next/navigation";
+import { Trailer } from "./Trailer";
 
-export const SearchBar = () => {
-  const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState<any[]>([]);
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+  overview: string;
+  backdrop_path: string;
+  genres: { id: number; name: string }[];
+}
+
+interface CrewMember {
+  job: string;
+  name: string;
+}
+
+export const MovieCard = () => {
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [director, setDirector] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [clicked, setClicked] = useState(false);
+  const { movieId } = useParams();
   const router = useRouter();
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
-  const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
-  const TMDB_IMAGE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_SERVICE_URL;
-
-  const searchMovies = debounce(async (searchQuery) => {
-    if (!searchQuery.trim()) {
-      setMovies([]);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await axios.get(`${TMDB_BASE_URL}/search/movie`, {
-        params: {
-          query: searchQuery,
-          language: "en-US",
-          api_key: API_KEY,
-        },
-      });
-
-      setMovies(response.data.results || []);
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }, 500);
+  const TMDB_BASE_URL = "https://api.themoviedb.org/3";
+  const TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
 
   useEffect(() => {
-    searchMovies(query);
-  }, [query]);
+    if (!movieId) return;
+
+    const fetchMovie = async () => {
+      try {
+        const response = await axios.get<Movie>(
+          `${TMDB_BASE_URL}/movie/${movieId}`,
+          {
+            params: {
+              api_key: API_KEY,
+              language: "en-US",
+            },
+          }
+        );
+
+        setMovie(response.data);
+      } catch (error) {
+        setError((error as { message: string }).message);
+      }
+    };
+
+    const fetchDirectors = async () => {
+      try {
+        const response = await axios.get<{ crew: CrewMember[] }>(
+          `${TMDB_BASE_URL}/movie/${movieId}/credits`,
+          {
+            params: {
+              api_key: API_KEY,
+              language: "en-US",
+            },
+          }
+        );
+
+        const director = response.data.crew.find(
+          (member) => member.job === "Director"
+        );
+
+        setDirector(director ? director.name : "Unknown");
+      } catch (err) {
+        setError((err as { message: string }).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovie();
+    fetchDirectors();
+  }, [movieId]);
+
+  if (loading)
+    return <div className="text-center">Loading movie details...</div>;
+  if (error)
+    return <div className="text-center text-red-500">Error: {error}</div>;
+  if (!movie)
+    return <div className="text-center text-gray-500">Movie not found.</div>;
 
   return (
-    <div className="relative z-10">
-      {/* Search Input */}
-      <input
-        type="text"
-        placeholder="Search"
-        className="px-4 py-2 rounded-md border border-gray-600 bg-black text-white w-[300px]"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
+    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <First />
 
-      {/* Loading & Error Handling */}
-      {loading && <div className="text-gray-400 mt-2">Loading...</div>}
-      {error && <div className="text-red-500 mt-2">Error: {error}</div>}
+      <div className="p-4 mx-auto text-white">
+        <h1 className="text-2xl text-white font-semibold">{movie.title}</h1>
+        <p className="mt-2 text-gray-300 font-medium">{movie.overview}</p>
 
-      {/* Search Results Box */}
-      {movies.length > 0 && (
-        <div className="absolute bg-[#1a1a1a] border border-gray-600 mt-2 w-[380px] rounded-lg shadow-lg max-h-[400px] overflow-y-auto p-2">
-          {movies.map((movie) => (
-            <div
-              key={movie.id}
-              className="flex items-center p-2 rounded-lg hover:bg-gray-800 cursor-pointer transition-all"
-              onClick={() => router.push(`/moviecard/${movie.id}`)}
-            >
-              {/* Movie Poster */}
-              {movie.poster_path ? (
-                <img
-                  className="h-[90px] w-[60px] rounded-md object-cover mr-3"
-                  src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
-                  alt={movie.title}
-                />
-              ) : (
-                <div className="h-[90px] w-[60px] bg-gray-600 rounded-md mr-3 flex items-center justify-center text-xs text-gray-400">
-                  No Image
-                </div>
-              )}
+        <div className="flex gap-8 justify-center mt-4">
+          {movie.poster_path && (
+            <img
+              src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
+              className="rounded-lg h-[430px] w-[288px] object-cover"
+              alt={movie.title}
+            />
+          )}
 
-              {/* Movie Details */}
-              <div className="flex flex-col flex-grow">
-                <span className="text-white font-semibold">{movie.title}</span>
-                <div className="flex items-center text-gray-400 text-sm">
-                  ⭐ {movie.vote_average.toFixed(1)}/10 &nbsp;•&nbsp;{" "}
-                  {movie.release_date ? movie.release_date.split("-")[0] : "N/A"}
+          <div className="relative">
+            {movie.backdrop_path && (
+              <img
+                src={`${TMDB_IMAGE_URL}/original${movie.backdrop_path}`}
+                className="w-[760px] h-[430px] rounded-lg object-cover"
+                alt={movie.title}
+              />
+            )}
+            {!clicked && (
+              <div
+                className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 rounded-lg cursor-pointer"
+                onClick={() => setClicked(true)}
+              >
+                <div className="bg-white p-4 rounded-full">
+                  <span className="text-black text-xl font-bold">▶</span>
                 </div>
               </div>
-
-              {/* "See more" Button */}
-              <button className="ml-auto text-blue-400 hover:underline">See more →</button>
-            </div>
-          ))}
-
-          {/* View All Results */}
-          <div className="text-center mt-2">
-            <button
-              className="text-gray-400 hover:text-white hover:underline"
-              onClick={() => router.push(`/search-results?q=${query}`)}
-            >
-              See all results for "{query}"
-            </button>
+            )}
+            {clicked && <Trailer />}
           </div>
         </div>
-      )}
+
+        <div className="mt-4 text-gray-300 text-lg">
+          <span className="font-semibold text-gray-400">Director: </span>
+          <span className="text-white">{director}</span>
+        </div>
+
+        <div className="flex gap-4 justify-center mt-4">
+          {movie.genres?.map((g) => (
+            <span
+              key={g.id}
+              className="text-md px-3 py-1 bg-gray-700 rounded-full text-white"
+            >
+              {g.name}
+            </span>
+          ))}
+        </div>
+
+        <button
+          className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          onClick={() => router.push(`/`)}
+        >
+          ← Back
+        </button>
+      </div>
     </div>
   );
 };

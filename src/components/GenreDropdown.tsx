@@ -66,7 +66,7 @@ export const GenreDropdown = () => {
             <DropdownMenuLabel>See lists of movies by genre</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="flex flex-wrap">
+              <DropdownMenuItem className="flex flex-wrap hidden sm:block">
                 {genres?.map((genre) => (
                   <Button
                     key={genre.id}

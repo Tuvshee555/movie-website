@@ -3,7 +3,7 @@
 import { Moon } from "./Moon";
 import { GenreDropdown } from "./GenreDropdown";
 import { useRouter } from "next/navigation";
-import { SearchBar } from "./SearchBar";
+import { SearchBar } from "./SearchBar"
 
 export const First = () => {
   const router = useRouter()

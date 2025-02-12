@@ -5,6 +5,16 @@ import { useEffect, useState } from "react";
 import React from "react";
 import ReactPlayer from "react-player";
 import { Skeleton } from "./ui/skeleton";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface Movie {
   id: number;
@@ -60,14 +70,40 @@ export const Trailer = () => {
 
   return (
     <>
-      {loading ? (
-        <Skeleton className="w-full h-[300px] rounded-lg bg-gray-700" />
-      ) : (
-        <ReactPlayer
-          url={`https://www.youtube.com/watch?v=${movie}`}
-          controls={true}
-        />
-      )}
+      <Dialog>
+        <DialogTrigger asChild>
+          <div
+            className="h-[50px] w-[50px] rounded-full bg-red-600 cursor-pointer flex justify-center items-center absolute bottom-0 left-0"
+          >
+            ▶
+          </div>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[700px] bg-">
+          <DialogHeader>
+            <DialogTitle></DialogTitle>
+          </DialogHeader>
+          {/* <div>
+            {loading ? (
+              <Skeleton className="w-full h-[300px] rounded-lg bg-gray-700 absolute" />
+            ) : (
+              <ReactPlayer
+                url={`https://www.youtube.com/watch?v=${movie}`}
+                controls={true}
+              />
+            )}
+          </div> */}
+          <div>
+            {loading ? (
+              <Skeleton className="w-full h-[300px] rounded-lg bg-gray-700 absolute" />
+            ) : (
+              <ReactPlayer
+                url={`https://www.youtube.com/watch?v=${movie}`}
+                controls={true}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

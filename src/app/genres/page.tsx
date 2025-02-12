@@ -1,5 +1,5 @@
 "use client";
-import { First } from "@/components/Header";
+import { First } from "@/components/layout/header/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";

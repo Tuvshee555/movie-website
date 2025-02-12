@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { First } from "./Header";
+import { First } from "./layout/header/Header";
 import { useParams, useRouter } from "next/navigation";
 import { Trailer } from "./Trailer";
+import { log } from "console";
 
 interface Movie {
   id: number;
@@ -17,6 +18,7 @@ interface Movie {
   crew: null;
   name: string;
   data: string;
+  popularity: number;
 }
 interface CrewMember {
   id: number;
@@ -27,6 +29,7 @@ export const MovieCard = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [directors, setDirectors] = useState<string | null>(null);
   const [writers, setWriters] = useState<string | null>(null);
+  const [stars, setStars] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [clicked, setClicked] = useState(false);
@@ -53,6 +56,7 @@ export const MovieCard = () => {
         );
 
         setMovie(response.data);
+        console.log(response.data, "data");
       } catch (error) {
         setError((error as { message: string }).message);
       } finally {
@@ -83,8 +87,8 @@ export const MovieCard = () => {
             ? response?.data?.crew?.[0]?.name
             : "Unknown"
         );
-        console.log(
-          response?.data?.crew[0]?.department === "Directing"
+        setStars(
+          response?.data?.crew[0]?.department === "Stars"
             ? response?.data?.crew[0]?.name
             : "Unknown"
         );
@@ -106,45 +110,51 @@ export const MovieCard = () => {
   if (!movie)
     return <div className="text-center text-gray-500">Movie not found.</div>;
 
-  console.log(directors);
-
   return (
     <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
       <First />
 
-      <div className="p-4 mx-auto text-white">
-        <h1 className="text-2xl text-black font-semibold">{movie.title}</h1>
-        <p className="mt-2 text-red-500 font-medium">{movie.overview}</p>
+      <div className="mx-auto text-white w-[1080px]">
+        <div className="flex justify-between ">
+          <h1 className="text-2xl text-black font-semibold">{movie.title}</h1>
+          <h1 className="text-[black] p-2">
+            {movie.vote_average.toFixed(1)}/10
+          </h1>
+          {/* <h1 className="text-[red]">{movie.popularity}</h1> */}
+        </div>
 
         <div className="flex gap-8 justify-center mt-4">
           {movie.poster_path && (
             <img
               src={`${TMDB_IMAGE_URL}/w500${movie.poster_path}`}
-              className="rounded-lg h-[430px] w-[288px] object-cover"
+              className="rounded-lg h-[430px] w-[288px] object-cover "
               alt={movie.title}
             />
           )}
 
-          <div>
+          <div className="relative">
             {movie.backdrop_path && (
               <img
                 src={`${TMDB_IMAGE_URL}/original${movie.backdrop_path}`}
-                className="w-[760px] h-[430px] rounded-lg object-cover"
+                className="w-[760px] h-[430px] rounded-lg object-cover "
                 alt={movie.title}
               />
             )}
+            {clicked ? (
+              <Trailer />
+            ) : (
+              <div
+                className="h-[50px] w-[50px] rounded-full bg-red-600 cursor-pointer flex justify-center items-center absolute bottom-0 left-0"
+                onClick={() => setClicked(true)}
+              >
+                ▶
+              </div>
+            )}
           </div>
-          {clicked ? (
-            <Trailer />
-          ) : (
-            <div
-              className="h-[50px] w-[50px] rounded-full bg-red-600 cursor-pointer flex justify-center items-center"
-              onClick={() => setClicked(true)}
-            >
-              ▶
-            </div>
-          )}
         </div>
+        <p className="mt-[20px] text-[black] font-medium text-[16px]">
+          {movie.overview}
+        </p>
 
         <div className="flex gap-4 justify-center mt-4">
           {movie.genres?.map((g) => (
@@ -154,13 +164,10 @@ export const MovieCard = () => {
           ))}
         </div>
         <div className="text-blue-600">{directors}</div>
+        <div className="w-full h-[1px] my-[10px] bg-[black]"></div>
         <div className="text-blue-600">{writers}</div>
-        <button
-          className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          onClick={() => router.push(`/`)}
-        >
-          ← Back
-        </button>
+        <div className="w-full h-[1px] my-[10px] bg-[black]"></div>
+        <div className="text-blue-700">{stars}</div>
       </div>
     </div>
   );

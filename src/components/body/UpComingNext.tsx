@@ -1,34 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { First } from "./Header";
+import { First } from "../layout/header/Header";
 import { useRouter } from "next/navigation";
 
-export const TopRatedNext = () => {
+export const UpcomingNext = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
-  type Movie = {
+  interface Movie {
     id: number;
     title: string;
     poster_path: string;
     vote_average: number;
-  };
+  }
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_IMAGE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_SERVICE_URL;
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchUpcomingMovies = async () => {
       try {
         const response = await fetch(
-          `${TMDB_BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=1`
+          `${TMDB_BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch top movies");
+          throw new Error("Failed to fetch upcoming movies");
         }
 
         const data = await response.json();
@@ -38,24 +38,28 @@ export const TopRatedNext = () => {
       }
     };
 
-    fetchMovies();
+    fetchUpcomingMovies();
   }, [API_KEY, TMDB_BASE_URL]);
-  console.log("TOPRATED");
 
-  if (loading) return <div>Loading Top Rated Movies...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) {
+    return <div>Loading upcoming movies...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <>
       <First />
       <div className="flex justify-center bg-black">
-        <div className="w-[1280px] align-center">
-          <div className="flex justify-between mb-6 mt-[52px]">
-            <h2 className="text-3xl font-bold text-white">
-              Top Rated Movies - Page
+        <div>
+          <div className="mt-[52px] flex justify-between bg-black">
+            <h2 className="text-[30px] font-[600] text-white bg-[black]">
+              Upcoming Movies - Page
             </h2>
             <button
-              className="text-white bg-gray-800 p-2 rounded-lg"
+              className="text-white bg-gray p-2 rounded-[8px]"
               onClick={() => router.back()}
             >
               ← Back

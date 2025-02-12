@@ -1,6 +1,6 @@
 "use client";
 
-import { TopRatedNext } from "@/components/TopRatedNext";
+import { TopRatedNext } from "@/components/body/TopRatedNext";
 
 export default function Home() {
   return <TopRatedNext />;

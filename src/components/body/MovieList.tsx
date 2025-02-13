@@ -12,16 +12,15 @@ interface Movie {
 }
 
 interface MoviesListProps {
-  category: string
+  category: string;
   title: string;
-  pageUrl: string;
 }
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
 const TMDB_IMAGE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_SERVICE_URL;
 
-export const MoviesList = ({ category, title, pageUrl }: MoviesListProps) => {
+export const MoviesList = ({ category, title }: MoviesListProps) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +31,7 @@ export const MoviesList = ({ category, title, pageUrl }: MoviesListProps) => {
       .get(`${TMDB_BASE_URL}/movie/${category}`, {
         params: { api_key: API_KEY, language: "en-US", page: 1 },
       })
-      .then((res) => setMovies(res.data.results.slice(0, 10)))
+      .then((res) => setMovies(res.data.results.slice(0, 10))) // Show only 10 movies
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [category]);
@@ -49,7 +48,7 @@ export const MoviesList = ({ category, title, pageUrl }: MoviesListProps) => {
         </h2>
         <button
           className="text-white bg-gray-800 p-2 rounded-lg"
-          onClick={() => router.push(`/${pageUrl}`)}
+          onClick={() => router.push(`/next/${category}`)} // Navigates to `/next/[category]`
         >
           See more
         </button>

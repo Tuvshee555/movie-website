@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import MoviesPage from "@/components/body/MoviesPage"
+import MoviesPage from "@/components/body/MoviesPage";
 
-export default function Home (){
-    return (
-        <>
-        <MoviesPage />
-        </>
-    )
+export default function Home() {
+  return (
+    <>
+      <MoviesPage />
+    </>
+  );
 }

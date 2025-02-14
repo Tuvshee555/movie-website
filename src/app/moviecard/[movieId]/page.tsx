@@ -22,7 +22,7 @@ interface CrewMember {
   job: string;
 }
 
-export default function  Home(){
+export default function MovieCard() {
   const { movieId } = useParams();
   const numericMovieId = Number(movieId);
   const router = useRouter();
@@ -118,13 +118,11 @@ export default function  Home(){
       <First />
 
       <div className="mx-auto text-white w-[1080px]">
-        {/* Movie Title & Rating */}
         <div className="flex justify-between">
           <h1 className="text-2xl text-black font-semibold">{movie.title}</h1>
           <h1 className="text-black p-2">{movie.vote_average.toFixed(1)}/10</h1>
         </div>
 
-        {/* Movie Images */}
         <div className="flex gap-8 justify-center mt-4">
           {movie.poster_path ? (
             <img
@@ -133,8 +131,8 @@ export default function  Home(){
               alt={movie.title}
             />
           ) : (
-            <div className="w-[288px] h-[430px] bg-gray-300 flex items-center justify-center rounded-lg">
-              <span className="text-gray-600">No Image</span>
+            <div className="w-[288px] h-[430px] bg-gray-400 flex items-center justify-center rounded-lg text-gray-700">
+              No Image Available
             </div>
           )}
 
@@ -146,8 +144,8 @@ export default function  Home(){
                 alt={movie.title}
               />
             ) : (
-              <div className="w-[760px] h-[430px] bg-gray-300 flex items-center justify-center rounded-lg">
-                <span className="text-gray-600">No Image</span>
+              <div className="w-[760px] h-[430px] bg-gray-400 flex items-center justify-center rounded-lg text-gray-700">
+                No Image Available
               </div>
             )}
             {clicked ? (
@@ -163,12 +161,10 @@ export default function  Home(){
           </div>
         </div>
 
-        {/* Overview */}
         <p className="mt-[20px] text-black font-medium text-[16px]">
           {movie.overview}
         </p>
 
-        {/* Genres */}
         <div className="flex gap-4 justify-center mt-4">
           {movie.genres?.map((g) => (
             <span key={g.id} className="text-lg text-green-500 font-semibold">
@@ -177,7 +173,6 @@ export default function  Home(){
           ))}
         </div>
 
-        {/* Crew Details */}
         <div className="text-blue-600">
           {directors.length
             ? `Director: ${directors.join(", ")}`
@@ -194,31 +189,38 @@ export default function  Home(){
           {stars.length ? `Stars: ${stars.join(", ")}` : "Stars: Unknown"}
         </div>
 
-        {/* See More Link */}
         <h1
-          className="hover:underline cursor-pointer mt-4"
+          className="hover:underline cursor-pointer mt-4 text-[black]"
           onClick={() => router.push(`/more_like/${movieId}`)}
         >
           See More
         </h1>
 
-        {/* Similar Movies */}
-        {/* Similar Movies */}
         <div className="flex justify-center gap-8 mt-4">
           {similar
-            .filter((similarMovie) => similarMovie.poster_path) // Remove movies without images
-            .slice(0, 5)
+            
+            .filter((movie) => {
+              if (movie.poster_path !== null) {
+                return movie.poster_path !== null;
+              }
+            }).slice(0, 5)
             .map((similarMovie) => (
               <div
                 key={similarMovie.id}
                 onClick={() => router.push(`/moviecard/${similarMovie.id}`)}
                 className="cursor-pointer"
               >
-                <img
-                  src={`${TMDB_IMAGE_URL}/w500${similarMovie.poster_path}`}
-                  className="w-[190px] h-[281px] rounded-lg"
-                  alt={similarMovie.title}
-                />
+                {similarMovie.poster_path ? (
+                  <img
+                    src={`${TMDB_IMAGE_URL}/w500${similarMovie.poster_path}`}
+                    className="w-[190px] h-[281px] rounded-lg"
+                    alt={similarMovie.title}
+                  />
+                ) : (
+                  <div className="w-[190px] h-[281px] bg-gray-400 flex items-center justify-center rounded-lg text-gray-700">
+                    No Image Available
+                  </div>
+                )}
                 <div className="flex items-center gap-1">
                   <img src="/star.png" className="h-[16px]" />
                   <h1>{similarMovie.vote_average.toFixed(1)}</h1>
@@ -230,4 +232,4 @@ export default function  Home(){
       </div>
     </div>
   );
-};
+}

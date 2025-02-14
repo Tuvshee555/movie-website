@@ -36,7 +36,7 @@ export const SearchBar = () => {
 
       {movies.length > 0 && (
         <div className="absolute bg-[#1a1a1a] border border-gray-600 mt-2 w-[380px] rounded-lg shadow-lg p-2 ">
-          {movies.map((movie) => (
+          {movies.slice(0, 5).map((movie) => (
             <div
               key={movie.id}
               className="flex items-center p-2 rounded-lg hover:bg-gray-800 cursor-pointer justify-between"

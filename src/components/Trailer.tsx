@@ -2,53 +2,45 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import React from "react";
 import ReactPlayer from "react-player";
 import { Skeleton } from "./ui/skeleton";
-import { Button } from "@/components/ui/button";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 
 interface Movie {
   id: number;
   key: string;
-  title: string;
-  trailer: string;
 }
 
 export const Trailer = () => {
-  const [movie, setMovie] = useState<Movie | null>(null); // null baiwal eniig ashiglan boolen
   const { movieId } = useParams();
-
+  const [movie, setMovie] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Movie | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
 
   const fetchVideos = async () => {
     try {
-      const trailer = await fetch(
+      const response = await fetch(
         `${TMDB_BASE_URL}/movie/${movieId}/videos?language=en-US&api_key=${API_KEY}`
       );
 
-      if (!trailer.ok) {
+      if (!response.ok) {
         throw new Error("Failed to fetch movie details");
       }
 
-      const data = await trailer.json();
-      console.log(data);
-
+      const data = await response.json();
       return data;
-    } catch (error: any) {
-      setError(error.message);
+    } catch (err: any) {
+      setError(err.message);
       return null;
     } finally {
       setLoading(false);
@@ -59,51 +51,45 @@ export const Trailer = () => {
     const loadMovie = async () => {
       setLoading(true);
       const data = await fetchVideos();
-      console.log(data?.results[0]);
-      setMovie(data?.results[0].key); //medeelel result array 0 ees avaad key trailerluu oron
+      setMovie(data?.results[0]?.key || null);
       setLoading(false);
     };
+
     if (movieId) loadMovie();
   }, [movieId]);
+
   if (error)
     return <div className="flex justify-center items-center">Error</div>;
 
   return (
-    <>
-      <Dialog>
-        <DialogTrigger asChild>
-          <div
-            className="h-[50px] w-[50px] rounded-full bg-red-600 cursor-pointer flex justify-center items-center absolute bottom-0 left-0"
-          >
-            ▶
-          </div>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[700px] bg-">
-          <DialogHeader>
-            <DialogTitle></DialogTitle>
-          </DialogHeader>
-          {/* <div>
-            {loading ? (
-              <Skeleton className="w-full h-[300px] rounded-lg bg-gray-700 absolute" />
-            ) : (
-              <ReactPlayer
-                url={`https://www.youtube.com/watch?v=${movie}`}
-                controls={true}
-              />
-            )}
-          </div> */}
-          <div>
-            {loading ? (
-              <Skeleton className="w-full h-[300px] rounded-lg bg-gray-700 absolute" />
-            ) : (
-              <ReactPlayer
-                url={`https://www.youtube.com/watch?v=${movie}`}
-                controls={true}
-              />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog>
+      <DialogTrigger asChild>
+        <div className="h-[50px] w-[50px] rounded-full bg-red-600 cursor-pointer flex justify-center items-center absolute bottom-0 left-0">
+          ▶
+        </div>
+      </DialogTrigger>
+      <DialogContent className="p-0 bg-transparent border-none shadow-none">
+        {/* Hidden Title for Accessibility */}
+        <VisuallyHidden>
+          <DialogTitle>Movie Trailer</DialogTitle>
+        </VisuallyHidden>
+
+        {/* Close Button with Gray Border */}
+        <DialogClose className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center border border-gray-500 rounded-full bg-transparent text-white hover:bg-gray-800 transition">
+          ✕
+        </DialogClose>
+
+        {loading ? (
+          <Skeleton className="w-[512px] h-[280px] rounded-lg bg-gray-700" />
+        ) : (
+          <ReactPlayer
+            url={`https://www.youtube.com/watch?v=${movie}`}
+            controls
+            width="512px"
+            height="280px"
+          />
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };

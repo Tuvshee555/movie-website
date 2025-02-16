@@ -14,6 +14,8 @@ interface Movie {
   overview: string;
   backdrop_path?: string;
   genres: { id: number; name: string }[];
+  release_date: string;
+  runtime: number;
 }
 
 interface CrewMember {
@@ -52,6 +54,7 @@ export default function MovieCard() {
           }
         );
         setMovie(response.data);
+        console.log(response);
       } catch (error) {
         setError((error as { message: string }).message);
       } finally {
@@ -119,7 +122,15 @@ export default function MovieCard() {
 
       <div className="mx-auto text-white w-[1080px]">
         <div className="flex justify-between">
-          <h1 className="text-2xl text-black font-semibold">{movie.title}</h1>
+          <div className="flex">
+            <div>
+              <h1 className="text-[36px] text-black font-bold">
+                {movie.title}
+              </h1>
+              <h1 className="text-[16px] text-black ">{movie.release_date}</h1>
+            </div>
+            <h1 className="text-[16px] text-black">{movie.runtime}</h1>
+          </div> 
           <h1 className="text-black p-2">{movie.vote_average.toFixed(1)}/10</h1>
         </div>
 
@@ -198,12 +209,13 @@ export default function MovieCard() {
 
         <div className="flex justify-center gap-8 mt-4">
           {similar
-            
+
             .filter((movie) => {
               if (movie.poster_path !== null) {
                 return movie.poster_path !== null;
               }
-            }).slice(0, 5)
+            })
+            .slice(0, 5)
             .map((similarMovie) => (
               <div
                 key={similarMovie.id}

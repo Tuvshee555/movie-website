@@ -22,7 +22,7 @@ export default function Genres() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalMovies, setTotalMovies] = useState(0)
+  // const [totalMovies, setTotalMovies] = useState(0)
   const [loading, setLoading] = useState(true);
   const [loadingMovies, setLoadingMovies] = useState(true);
   const router = useRouter();
@@ -66,7 +66,7 @@ export default function Genres() {
         });
         setMovies(response.data.results);
         setTotalPages(response.data.total_pages);
-        setTotalMovies(response.data.total_results)
+        // setTotalMovies(response.data.total_results)
         console.log(response.data);
         
       } catch (error) {
